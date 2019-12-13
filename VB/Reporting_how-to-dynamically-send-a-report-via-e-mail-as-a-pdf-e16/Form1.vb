@@ -22,14 +22,21 @@ Namespace SendReportAsEMailCS
                 ' Create a new memory stream and export the report into it as PDF.
                 Dim mem As New MemoryStream()
                 report.ExportToPdf(mem)
+                ' Export report to PDF file
+                report.ExportToPdf("exportedFile.pdf")
 
                 ' Create a new attachment and put the PDF report into it.
                 mem.Seek(0, System.IO.SeekOrigin.Begin)
                 Dim att As New Attachment(mem, "TestReport.pdf", "application/pdf")
 
-                ' Create a new message and attach the PDF report to it.
+                ' Create second attachment and put the exported PDF report into it.
+                Dim currentFolder = Path.GetDirectoryName(Me.GetType().Assembly.Location)
+                Dim att2 As New Attachment(Path.Combine(currentFolder, "exportedFile.pdf"), "application/pdf")
+
+                ' Create a new message and attach the PDF reports to it.
                 Dim mail As New MailMessage()
                 mail.Attachments.Add(att)
+                mail.Attachments.Add(att2)
 
                 ' Specify sender and recipient options for the e-mail message.
                 mail.From = New MailAddress("someone@somewhere.com", "Someone")
